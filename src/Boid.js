@@ -169,28 +169,31 @@ class Boid {
   }
 
   avoid() {
-    let mouse = this.p5.createVector(this.p5.mouseX, this.p5.mouseY);
-    console.log("mouse: ", mouse);
+    let mouseXConverted = this.p5.mouseX - this.p5.width / 2;
+    let mouseYConverted = this.p5.mouseY - this.p5.height / 2;
+
+    let mouse = this.p5.createVector(mouseXConverted, mouseYConverted);
     let desiredseparation = 100.0;
     let steer = this.p5.createVector(0, 0);
-    let d = Math.sqrt(
-      (mouse.x - this.position.x) ** 2 + (mouse.y - this.position.y) ** 2
-    );
+    let d = this.p5.dist(mouse.x, mouse.y, this.position.x, this.position.y);
+
     if (d > 0 && d < desiredseparation) {
       let diff = this.p5.createVector(
         this.position.x - mouse.x,
         this.position.y - mouse.y
       );
       diff.normalize();
-      diff.div(d);
+      diff.div(d); // Weight by distance
       steer.add(diff);
     }
+
     if (steer.mag() > 0) {
       steer.normalize();
       steer.mult(this.maxspeed);
       steer.sub(this.velocity);
       steer.limit(this.maxforce);
     }
+
     return steer;
   }
 }

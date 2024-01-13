@@ -7,7 +7,7 @@ function sketch(p5) {
   p5.setup = () => {
     p5.createCanvas(p5.windowWidth, p5.windowHeight, p5.WEBGL);
     flock = new Flock(p5);
-    for (let i = 0; i < 400; i++) {
+    for (let i = 0; i < 300; i++) {
       flock.addBoid(
         new Boid(
           p5.random(-p5.width / 2, p5.width / 2),
@@ -21,6 +21,10 @@ function sketch(p5) {
   p5.draw = () => {
     p5.background(0);
     flock.run();
+  };
+
+  p5.windowResized = function () {
+    p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
   };
 }
 
