@@ -1,5 +1,3 @@
-import Boid from "./Boid";
-
 class Flock {
   constructor(p5) {
     this.boids = [];

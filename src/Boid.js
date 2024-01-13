@@ -22,16 +22,16 @@ class Boid {
 
   flock(boids, p5) {
     let sep = this.separation(boids, p5);
-    // let ali = this.alignment(boids);
-    // let coh = this.cohesion(boids);
+    let ali = this.alignment(boids);
+    let coh = this.cohesion(boids);
     let avo = this.avoid();
     sep.mult(1.5);
-    // ali.mult(1.0);
-    // coh.mult(1.0);
+    ali.mult(1.0);
+    coh.mult(1.0);
     avo.mult(2.5);
     this.applyForce(sep);
-    // this.applyForce(ali);
-    // this.applyForce(coh);
+    this.applyForce(ali);
+    this.applyForce(coh);
     this.applyForce(avo);
   }
 
@@ -43,12 +43,18 @@ class Boid {
   }
 
   seek(target) {
-    //     let desired = p5.Vector.sub(target, this.position);
-    //     desired.normalize();
-    //     desired.mult(this.maxspeed);
-    //     let steer = p5.Vector.sub(desired, this.velocity);
-    //     steer.limit(this.maxforce);
-    //     return steer;
+    let desired = this.p5.createVector(
+      target.x - this.position.x,
+      target.y - this.position.y
+    );
+    desired.normalize();
+    desired.mult(this.maxspeed);
+    let steer = this.p5.createVector(
+      desired.x - this.velocity.x,
+      desired.y - this.velocity.y
+    );
+    steer.limit(this.maxforce);
+    return steer;
   }
 
   render(p5) {
@@ -69,10 +75,14 @@ class Boid {
   }
 
   borders(p5) {
-    if (this.position.x < -this.r) this.position.x = p5.width + this.r;
-    if (this.position.y < -this.r) this.position.y = p5.height + this.r;
-    if (this.position.x > p5.width + this.r) this.position.x = -this.r;
-    if (this.position.y > p5.height + this.r) this.position.y = -this.r;
+    if (this.position.x < -(p5.width / 2 + this.r))
+      this.position.x = p5.width / 2 + this.r;
+    if (this.position.y < -(p5.height / 2 + this.r))
+      this.position.y = p5.height / 2 + this.r;
+    if (this.position.x > p5.width / 2 + this.r)
+      this.position.x = -(p5.width / 2 + this.r);
+    if (this.position.y > p5.height / 2 + this.r)
+      this.position.y = -(p5.height / 2 + this.r);
   }
 
   separation(boids, p) {
@@ -80,23 +90,29 @@ class Boid {
     let steer = p.createVector(0, 0);
     let count = 0;
     for (const other of boids) {
-      //       let d = p5.Vector.dist(this.position, other.position);
-      //       if (d > 0 && d < desiredseparation) {
-      //         let diff = p5.Vector.sub(this.position, other.position);
-      //         diff.normalize();
-      //         diff.div(d);
-      //         steer.add(diff);
-      //         count++;
-      //       }
+      let d = Math.sqrt(
+        (other.position.x - this.position.x) ** 2 +
+          (other.position.y - this.position.y) ** 2
+      );
+      if (d > 0 && d < desiredseparation) {
+        let diff = p.createVector(
+          this.position.x - other.position.x,
+          this.position.y - other.position.y
+        );
+        diff.normalize();
+        diff.div(d);
+        steer.add(diff);
+        count++;
+      }
     }
     if (count > 0) {
       steer.div(count);
     }
     if (steer.mag() > 0) {
-      //       steer.normalize();
-      //       steer.mult(this.maxspeed);
-      //       steer.sub(this.velocity);
-      //       steer.limit(this.maxforce);
+      steer.normalize();
+      steer.mult(this.maxspeed);
+      steer.sub(this.velocity);
+      steer.limit(this.maxforce);
     }
     return steer;
   }
@@ -106,19 +122,25 @@ class Boid {
     let sum = this.p5.createVector(0, 0);
     let count = 0;
     for (const other of boids) {
-      //       let d = p5.Vector.dist(this.position, other.position);
-      //       if (d > 0 && d < neighbordist) {
-      //         sum.add(other.velocity);
-      //         count++;
-      //       }
+      let d = Math.sqrt(
+        (other.position.x - this.position.x) ** 2 +
+          (other.position.y - this.position.y) ** 2
+      );
+      if (d > 0 && d < neighbordist) {
+        sum.add(other.velocity);
+        count++;
+      }
     }
     if (count > 0) {
       sum.div(count);
       sum.normalize();
       sum.mult(this.maxspeed);
-      //       let steer = p5.Vector.sub(sum, this.velocity);
-      //       steer.limit(this.maxforce);
-      //       return steer;
+      let steer = this.p5.createVector(
+        sum.x - this.velocity.x,
+        sum.y - this.velocity.y
+      );
+      steer.limit(this.maxforce);
+      return steer;
     } else {
       return this.p5.createVector(0, 0);
     }
@@ -129,15 +151,18 @@ class Boid {
     let sum = this.p5.createVector(0, 0);
     let count = 0;
     for (const other of boids) {
-      //       let d = p5.Vector.dist(this.position, other.position);
-      //       if (d > 0 && d < neighbordist) {
-      //         sum.add(other.position);
-      //         count++;
-      //       }
+      let d = Math.sqrt(
+        (other.position.x - this.position.x) ** 2 +
+          (other.position.y - this.position.y) ** 2
+      );
+      if (d > 0 && d < neighbordist) {
+        sum.add(other.position);
+        count++;
+      }
     }
     if (count > 0) {
       sum.div(count);
-      //       return this.seek(sum);
+      return this.seek(sum);
     } else {
       return this.p5.createVector(0, 0);
     }
@@ -145,15 +170,21 @@ class Boid {
 
   avoid() {
     let mouse = this.p5.createVector(this.p5.mouseX, this.p5.mouseY);
+    console.log("mouse: ", mouse);
     let desiredseparation = 100.0;
     let steer = this.p5.createVector(0, 0);
-    //     let d = p5.Vector.dist(this.position, mouse);
-    //     if (d > 0 && d < desiredseparation) {
-    //       let diff = p5.Vector.sub(this.position, mouse);
-    //       diff.normalize();
-    //       diff.div(d);
-    //       steer.add(diff);
-    //     }
+    let d = Math.sqrt(
+      (mouse.x - this.position.x) ** 2 + (mouse.y - this.position.y) ** 2
+    );
+    if (d > 0 && d < desiredseparation) {
+      let diff = this.p5.createVector(
+        this.position.x - mouse.x,
+        this.position.y - mouse.y
+      );
+      diff.normalize();
+      diff.div(d);
+      steer.add(diff);
+    }
     if (steer.mag() > 0) {
       steer.normalize();
       steer.mult(this.maxspeed);
