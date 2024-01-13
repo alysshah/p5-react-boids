@@ -201,7 +201,7 @@ class Boid {
 function getColorFromSpeed(speed, maxSpeed, p5) {
   let percent = speed / maxSpeed;
   let endColor = p5.color(0, 0, 255);
-  let startColor = p5.color(255, 0, 50);
+  let startColor = p5.color(0, 255, 50);
   let lerpedColor = p5.lerpColor(startColor, endColor, percent);
   return lerpedColor;
 }
