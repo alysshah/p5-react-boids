@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/p5-react-boids/static/css/main.f855e6bc.css",
+    "main.js": "/p5-react-boids/static/js/main.f846b7a9.js",
+    "static/js/787.99530fd1.chunk.js": "/p5-react-boids/static/js/787.99530fd1.chunk.js",
+    "index.html": "/p5-react-boids/index.html",
+    "main.f855e6bc.css.map": "/p5-react-boids/static/css/main.f855e6bc.css.map",
+    "main.f846b7a9.js.map": "/p5-react-boids/static/js/main.f846b7a9.js.map",
+    "787.99530fd1.chunk.js.map": "/p5-react-boids/static/js/787.99530fd1.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f855e6bc.css",
+    "static/js/main.f846b7a9.js"
+  ]
+}
